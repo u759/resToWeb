@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Image from "next/image";
 import FileUpload from '@/components/FileUpload'; // Using import alias
 
 interface GeneratedCode {

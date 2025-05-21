@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-// import OpenAI from 'openai'; // OpenAI import removed
+import { GoogleGenerativeAI } from '@google/generative-ai'; // Changed from require to import
 import pdf from 'pdf-parse';
 import { Buffer } from 'buffer';
 
@@ -134,9 +134,9 @@ export async function POST(request: NextRequest) {
     // --- Placeholder for Google Gemini API Call ---
     // You'll need to adapt this based on the Google Generative AI SDK
     // For example:
-    const genAI = new (require('@google/generative-ai').GoogleGenerativeAI)(process.env.GEMINI_API_KEY);
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!); // Use imported GoogleGenerativeAI
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.5-flash-preview-05-20", // Ensure this is the correct model name for "2.5 flash"
+      model: "gemini-1.5-flash-latest", // Ensure this is the correct model name for "1.5 flash"
       // generationConfig: { responseMimeType: "application/json" } // If supported, to enforce JSON output
     });
     
