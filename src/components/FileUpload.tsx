@@ -103,7 +103,7 @@ export default function FileUpload({ onUploadSuccess, onUploadError }: FileUploa
             rows={3}
             maxLength={100}
             className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-600 rounded-md bg-gray-700 text-gray-200 placeholder-gray-500 p-2"
-            placeholder="e.g., Emphasize my experience with Next.js"
+            placeholder="e.g. Dark theme"
             value={customInstructions}
             onChange={(e) => setCustomInstructions(e.target.value)}
           />
@@ -115,9 +115,14 @@ export default function FileUpload({ onUploadSuccess, onUploadError }: FileUploa
         <button
           type="submit"
           disabled={isUploading || !file}
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
         >
-          {isUploading ? 'Generating...' : 'Generate Portfolio'}
+          {isUploading && (
+            <div className="animate-indeterminate-progress-bar"></div>
+          )}
+          <span className="relative z-10"> {/* Ensure text is above the progress bar */}
+            {isUploading ? 'Generating...' : 'Generate Portfolio'}
+          </span>
         </button>
       </div>
     </form>

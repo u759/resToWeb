@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import FileUpload from '@/components/FileUpload'; // Using import alias
+import JSZip from 'jszip'; // Import JSZip
 
 interface GeneratedCode {
   html: string;
@@ -34,15 +35,35 @@ export default function HomePage() {
     URL.revokeObjectURL(link.href);
   };
 
+  const downloadAllFilesAsZip = () => {
+    if (!generatedCode) return;
+
+    const zip = new JSZip();
+    zip.file("index.html", generatedCode.html);
+    zip.file("style.css", generatedCode.css);
+    zip.file("script.js", generatedCode.js);
+
+    zip.generateAsync({ type: "blob" })
+      .then(function(content) {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(content);
+        link.download = "portfolio-files.zip";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+      });
+  };
+
   return (
     <div className="min-h-screen p-8 pb-20 font-[family-name:var(--font-geist-sans)] flex flex-col items-center">
       <div className="z-10 w-full max-w-3xl items-center justify-between font-mono text-sm lg:flex flex-col">
         <header className="text-center mb-12">
           <h1 className="text-4xl sm:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
-            AI Resume to Portfolio
+            Resume to Portfolio
           </h1>
           <p className="text-lg text-gray-300">
-            Upload your PDF resume and instantly generate a modern static portfolio website.
+            Upload your PDF resume and instantly generate a modern static portfolio website using Gen AI!
           </p>
         </header>
 
@@ -83,6 +104,16 @@ export default function HomePage() {
               </button>
             </div>
             
+            {/* Add Download All Button */}
+            <div className="mt-4 text-center"> 
+              <button
+                onClick={downloadAllFilesAsZip}
+                className="w-full md:w-auto py-3 px-6 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500"
+              >
+                Download All (ZIP)
+              </button>
+            </div>
+
             <div className="mt-8">
               <h3 className="text-xl font-semibold mb-3 text-indigo-300">Preview HTML:</h3>
               <div className="bg-gray-900 p-4 rounded-md max-h-96 overflow-auto border border-gray-700">
