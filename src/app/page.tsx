@@ -1,103 +1,100 @@
+'use client';
+
+import { useState } from 'react';
 import Image from "next/image";
+import FileUpload from '@/components/FileUpload'; // Using import alias
 
-export default function Home() {
+interface GeneratedCode {
+  html: string;
+  css: string;
+  js: string;
+}
+
+export default function HomePage() {
+  const [generatedCode, setGeneratedCode] = useState<GeneratedCode | null>(null);
+  const [error, setError] = useState<string>('');
+
+  const handleUploadSuccess = (code: GeneratedCode) => {
+    setGeneratedCode(code);
+    setError('');
+  };
+
+  const handleUploadError = (errorMessage: string) => {
+    setError(errorMessage);
+    setGeneratedCode(null);
+  };
+
+  const downloadFile = (filename: string, content: string, mimeType: string) => {
+    const blob = new Blob([content], { type: mimeType });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen p-8 pb-20 font-[family-name:var(--font-geist-sans)] flex flex-col items-center">
+      <div className="z-10 w-full max-w-3xl items-center justify-between font-mono text-sm lg:flex flex-col">
+        <header className="text-center mb-12">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+            AI Resume to Portfolio
+          </h1>
+          <p className="text-lg text-gray-300">
+            Upload your PDF resume and instantly generate a modern static portfolio website.
+          </p>
+        </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+        <div className="w-full bg-gray-800 shadow-2xl rounded-lg p-6 sm:p-8">
+          <FileUpload onUploadSuccess={handleUploadSuccess} onUploadError={handleUploadError} />
+          {error && (
+            <div className="mt-6 p-4 bg-red-500/20 text-red-300 border border-red-500 rounded-md">
+              <p className="font-semibold">Error:</p>
+              <p>{error}</p>
+            </div>
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {generatedCode && (
+          <section className="mt-12 w-full bg-gray-800 shadow-2xl rounded-lg p-6 sm:p-8">
+            <h2 className="text-2xl sm:text-3xl font-semibold mb-6 text-center text-indigo-400">Your Portfolio is Ready!</h2>
+            <p className="text-gray-300 mb-6 text-center">
+              Download the generated HTML, CSS, and JavaScript files below. You can host these files on any static site hosting platform.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <button
+                onClick={() => downloadFile('index.html', generatedCode.html, 'text/html')}
+                className="w-full py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-green-500"
+              >
+                Download HTML
+              </button>
+              <button
+                onClick={() => downloadFile('style.css', generatedCode.css, 'text/css')}
+                className="w-full py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-500"
+              >
+                Download CSS
+              </button>
+              <button
+                onClick={() => downloadFile('script.js', generatedCode.js, 'text/javascript')}
+                className="w-full py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-yellow-400"
+              >
+                Download JavaScript
+              </button>
+            </div>
+            
+            <div className="mt-8">
+              <h3 className="text-xl font-semibold mb-3 text-indigo-300">Preview HTML:</h3>
+              <div className="bg-gray-900 p-4 rounded-md max-h-96 overflow-auto border border-gray-700">
+                <pre className="text-sm text-gray-200 whitespace-pre-wrap">
+                  <code>{generatedCode.html}</code>
+                </pre>
+              </div>
+            </div>
+          </section>
+        )}
+      </div>
     </div>
   );
 }
